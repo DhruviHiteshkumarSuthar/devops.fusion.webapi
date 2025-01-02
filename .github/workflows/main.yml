@@ -40,6 +40,12 @@ jobs:
         run: |
           kubectl apply -f deployment/deployment.yaml
           kubectl apply -f deployment/service.yaml
+      
+      - name: Check Pod Status
+        run: kubectl get pods
+
+      - name: Describe Deployment
+        run: kubectl describe deployment devops-fusion-webapi
 
       - name: Wait for Pods to be Running
         run: |
