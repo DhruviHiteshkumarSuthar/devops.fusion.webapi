@@ -13,7 +13,10 @@ spec:
         app: devops-fusion-webapi
     spec:
       containers:
-        - name: devops-fusion-webapi
-          image: ${DOCKER_USERNAME}/devops.fusion.webapi:${GITHUB_SHA}
-          ports:
-            - containerPort: 8080
+      - name: devops-fusion-webapi
+        image: ${{ secrets.DOCKER_USERNAME }}/devops.fusion.webapi:${{ github.sha }}
+        ports:
+        - containerPort: 8080
+        env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
