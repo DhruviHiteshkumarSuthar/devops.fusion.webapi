@@ -14,22 +14,18 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: Set up Minikube
-        uses: manusa/actions-setup-minikube@v2.13.0  
-        with:
-          minikube version: 'latest'
-          kubernetes version: '1.32.0'
-          driver: docker
+        uses: sagikazarmark/setup-minikube-action@v0
 
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v4.0.0
-        with:
-          version: 'latest'
+      - name: Launch Minikube Cluster
+        run: minikube start
 
       - name: Build Docker Image
         uses: docker/build-push-action@v6.10.0
         with:
           push: false
           tags: devops.fusion.webapi:latest
+          context: ./devops.fusion.api
+          file: ./devops.fusion.webapi/Dockerfile
 
       - name: Load Docker Image into Minikube
         run: minikube image load devops.fusion.webapi:latest
@@ -39,23 +35,14 @@ jobs:
           kubectl apply -f deployment/deployment.yaml
           kubectl apply -f deployment/service.yaml
 
-      - name: Wait for Pod to be Running
+      - name: Wait for Pods to be Running
         run: |
           kubectl rollout status deployment/devops-fusion-webapi
           kubectl get pods
 
-      - name: Check Pod Logs
-        run: |
-          POD_NAME=$(kubectl get pods -l app=devops-fusion-webapi -o jsonpath='{.items[0].metadata.name}')
-          kubectl logs $POD_NAME
-
-      - name: Describe Pod for Detailed Errors
-        run: |
-          kubectl describe pod $POD_NAME
-
-      - name: Minikube Service URL
+      - name: Get Service URL
         run: |
           minikube service my-app --url
-
+    
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
