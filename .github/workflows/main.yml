@@ -71,8 +71,11 @@ jobs:
       # Access the Application
       - name: Access the Application
         run: |
+          kubectl port-forward service/devops-fusion-webapi 8080:8080
+          echo "Access app at http://localhost:8080/weatherforecast"
           echo "Accessing app at http://$MINIKUBE_IP:30000/weatherforecast"
           curl http://$MINIKUBE_IP:30000/weatherforecast
+          kubectl port-forward service/devops-fusion-webapi 8080:8080
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
