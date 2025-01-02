@@ -14,26 +14,22 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: Set up Minikube
-        uses: manusa/actions-setup-minikube@v2.13.0
-        with:
-          minikube version: 'latest'       # Ensuring latest version of Minikube is used
-          kubernetes version: '1.32.0'     # Ensuring desired Kubernetes version
-          driver: 'docker'                 # Using Docker as the driver for Minikube
+        uses: sagikazarmark/setup-minikube-action@v0
 
-      - name: Start Minikube
+      - name: Launch Minikube Cluster
         run: |
-          minikube start --driver=docker    
+          minikube start --driver=docker
 
       - name: Set up kubectl
-        uses: azure/setup-kubectl@v4.0.0  
+        uses: azure/setup-kubectl@v4.0.0
         with:
           version: 'latest'
 
       - name: Build Docker Image
-        uses: docker/build-push-action@v6.10.0  
+        uses: docker/build-push-action@v6.10.0
         with:
-          push: false                      # Prevent pushing to a Docker registry
-          tags: devops.fusion.webapi:latest  # Docker image tag
+          push: false
+          tags: devops.fusion.webapi:latest
 
       - name: Apply Kubernetes Configuration
         run: |
@@ -41,4 +37,4 @@ jobs:
           kubectl apply -f deployment/service.yaml
 
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # Setting GitHub token as an environment variable
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
