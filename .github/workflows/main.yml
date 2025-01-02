@@ -38,18 +38,16 @@ jobs:
       - name: Launch Minikube Cluster
         run: minikube start
 
-      # Debugging: Verify Minikube Cluster
-      - name: Verify Minikube Nodes
-        run: kubectl get nodes
-
       # Load Docker image into Minikube
       - name: Load Docker Image into Minikube
         run: |
           minikube image load ${{ secrets.DOCKER_USERNAME }}/devops.fusion.webapi:${{ github.sha }}
 
-      # Debugging: Verify Image in Minikube
-      - name: List Minikube Images
-        run: minikube image list
+      # Replace placeholders in Kubernetes manifests
+      - name: Replace Placeholders in Manifests
+        run: |
+          sed -i "s|\${DOCKER_USERNAME}|${{ secrets.DOCKER_USERNAME }}|g" ./deployment/deployment.yaml
+          sed -i "s|\${GITHUB_SHA}|${{ github.sha }}|g" ./deployment/deployment.yaml
 
       # Apply Kubernetes manifests
       - name: Deploy to Minikube
@@ -57,30 +55,9 @@ jobs:
           kubectl apply -f ./deployment/deployment.yaml
           kubectl apply -f ./deployment/service.yaml
 
-      # Debugging: Check Pod Status
-      - name: Get Pod Status
-        run: kubectl get pods -o wide
-
-      # Debugging: Describe Pod for Details
-      - name: Describe Pod
-        run: |
-          POD_NAME=$(kubectl get pods -l app=devops-fusion-webapi -o jsonpath='{.items[0].metadata.name}')
-          kubectl describe pod $POD_NAME
-
-      # Debugging: Check Kubernetes Events
-      - name: Get Events
-        run: kubectl get events --sort-by=.metadata.creationTimestamp
-
       # Wait for Deployment to Be Ready
       - name: Wait for Application to Be Ready
         run: kubectl rollout status deployment/devops-fusion-webapi
-
-      # Debugging: Check Logs if Rollout Fails
-      - name: Get Logs
-        if: failure()
-        run: |
-          POD_NAME=$(kubectl get pods -l app=devops-fusion-webapi -o jsonpath='{.items[0].metadata.name}')
-          kubectl logs $POD_NAME
 
       # Access the Application
       - name: Access the Application

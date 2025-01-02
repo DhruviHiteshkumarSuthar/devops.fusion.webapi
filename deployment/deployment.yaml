@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: devops-fusion-webapi
-        image: ${{ secrets.DOCKER_USERNAME }}/devops.fusion.webapi:${{ github.sha }}
+        image: ${DOCKER_USERNAME}/devops.fusion.webapi:${GITHUB_SHA}
         ports:
         - containerPort: 8080
         env:
