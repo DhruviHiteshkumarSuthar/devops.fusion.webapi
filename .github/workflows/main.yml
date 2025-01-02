@@ -24,7 +24,7 @@ jobs:
         with:
           push: false
           tags: devops.fusion.webapi:latest
-          context: ./devops.fusion.api
+          context: ./devops.fusion.webapi
           file: ./devops.fusion.webapi/Dockerfile
 
       - name: Load Docker Image into Minikube
