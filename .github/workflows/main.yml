@@ -30,7 +30,7 @@ jobs:
         with:
           push: false
           tags: devops.fusion.webapi:latest
-          context: .  # Adjust this if your Dockerfile is in a subfolder
+          context: ./devops.fusion.webapi
           file: ./devops.fusion.webapi/Dockerfile  # Adjust the path if the Dockerfile is in a subfolder
 
 
