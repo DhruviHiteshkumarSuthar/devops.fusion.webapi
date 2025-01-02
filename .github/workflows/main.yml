@@ -125,3 +125,4 @@ jobs:
         run: |
           LB_IP=$(kubectl get svc devops-fusion-webapi -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
           echo "Application is accessible at http://$LB_IP"
+          curl http://$LB_IP/weatherforecast
