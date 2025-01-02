@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: devops-fusion-webapi-service
+  name: my-app
 spec:
   selector:
-    app: devops-fusion-webapi
+    app: my-app
   ports:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-  type: ClusterIP
+      nodePort: 30001
+  type: NodePort
