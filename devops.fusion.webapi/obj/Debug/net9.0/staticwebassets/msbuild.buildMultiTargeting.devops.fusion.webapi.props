@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\devops.fusion.webapi.props" />
+</Project>

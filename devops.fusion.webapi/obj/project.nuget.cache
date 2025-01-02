@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "F//ITws7Tuw=",
+  "success": true,
+  "projectFilePath": "D:\\Dhruvi\\Internship\\task1\\devops-fusion\\devops.fusion.webapi\\devops.fusion.webapi\\devops.fusion.webapi.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\dhruv\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.0\\microsoft.aspnetcore.openapi.9.0.0.nupkg.sha512",
+    "C:\\Users\\dhruv\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512",
+    "C:\\Users\\dhruv\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.21.0\\microsoft.visualstudio.azure.containers.tools.targets.1.21.0.nupkg.sha512"
+  ],
+  "logs": []
+}

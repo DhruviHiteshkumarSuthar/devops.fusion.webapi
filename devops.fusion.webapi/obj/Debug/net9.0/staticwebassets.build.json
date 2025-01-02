@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "uNuYIDfa7c/7GE63IScKNiU0uARmjxcGgdkxftc66Bs=",
+  "Source": "devops.fusion.webapi",
+  "BasePath": "_content/devops.fusion.webapi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-fusion-webapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devops-fusion-webapi
+  template:
+    metadata:
+      labels:
+        app: devops-fusion-webapi
+    spec:
+      containers:
+        - name: devops-fusion-webapi
+          image: devops.fusion.webapi:latest
+          ports:
+            - containerPort: 8080
