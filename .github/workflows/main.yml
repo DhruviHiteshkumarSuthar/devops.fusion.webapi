@@ -59,9 +59,6 @@ jobs:
 
       - name: Port Forward and Access Application
         run: |
-          kubectl port-forward service/devops-fusion-webapi 8080:8080 &
-          echo "Accessing app at http://localhost:8080/weatherforecast"
-          curl http://localhost:8080/weatherforecast
           echo "Accessing app at http://$MINIKUBE_IP:30000/weatherforecast"
           curl http://$MINIKUBE_IP:30000/weatherforecast
           
