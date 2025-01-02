@@ -63,6 +63,11 @@ jobs:
       - name: Get Minikube IP
         run: echo "MINIKUBE_IP=$(minikube ip)" >> $GITHUB_ENV
 
+      # Wait for the pod to be ready
+      - name: Wait for Pod to be Ready
+        run: |
+          kubectl wait --for=condition=ready pod -l app=devops-fusion-webapi --timeout=120s
+
       # Access the Application
       - name: Access the Application
         run: |
