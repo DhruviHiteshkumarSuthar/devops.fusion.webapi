@@ -14,11 +14,11 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: Set up Minikube
-        uses: sagikazarmark/setup-minikube-action@v0
-
-      - name: Launch Minikube Cluster
-        run: |
-          minikube start --driver=docker
+        uses: manusa/actions-setup-minikube@v2.13.0  
+        with:
+          minikube version: 'latest'
+          kubernetes version: '1.32.0'
+          driver: docker
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v4.0.0
@@ -30,19 +30,32 @@ jobs:
         with:
           push: false
           tags: devops.fusion.webapi:latest
-          context: ./devops.fusion.webapi
-          file: ./devops.fusion.webapi/Dockerfile  # Adjust the path if the Dockerfile is in a subfolder
 
+      - name: Load Docker Image into Minikube
+        run: minikube image load devops.fusion.webapi:latest
 
       - name: Apply Kubernetes Configuration
         run: |
           kubectl apply -f deployment/deployment.yaml
           kubectl apply -f deployment/service.yaml
-      
-      - name: Expose Minikube Service
+
+      - name: Wait for Pod to be Running
+        run: |
+          kubectl rollout status deployment/devops-fusion-webapi
+          kubectl get pods
+
+      - name: Check Pod Logs
+        run: |
+          POD_NAME=$(kubectl get pods -l app=devops-fusion-webapi -o jsonpath='{.items[0].metadata.name}')
+          kubectl logs $POD_NAME
+
+      - name: Describe Pod for Detailed Errors
+        run: |
+          kubectl describe pod $POD_NAME
+
+      - name: Minikube Service URL
         run: |
           minikube service my-app --url
-
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
