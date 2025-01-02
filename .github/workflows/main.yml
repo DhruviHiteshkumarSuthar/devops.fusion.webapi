@@ -10,18 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code
       - name: Checkout Code
         uses: actions/checkout@v4.2.2
 
-      # Log in to DockerHub
       - name: Log in to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build and Push Docker Image
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v6.10.0
         with:
@@ -30,52 +27,43 @@ jobs:
           context: ./devops.fusion.webapi
           file: ./devops.fusion.webapi/Dockerfile
 
-      # Set up Minikube
       - name: Set up Minikube
         uses: sagikazarmark/setup-minikube-action@v0
 
-      # Start Minikube
       - name: Launch Minikube Cluster
         run: minikube start
 
-      # Load Docker image into Minikube
       - name: Load Docker Image into Minikube
         run: |
           minikube image load ${{ secrets.DOCKER_USERNAME }}/devops.fusion.webapi:${{ github.sha }}
 
-      # Replace placeholders in Kubernetes manifests
       - name: Replace Placeholders in Manifests
         run: |
           sed -i "s|\${DOCKER_USERNAME}|${{ secrets.DOCKER_USERNAME }}|g" ./deployment/deployment.yaml
           sed -i "s|\${GITHUB_SHA}|${{ github.sha }}|g" ./deployment/deployment.yaml
 
-      # Apply Kubernetes manifests
       - name: Deploy to Minikube
         run: |
           kubectl apply -f ./deployment/deployment.yaml
           kubectl apply -f ./deployment/service.yaml
 
-      # Wait for Deployment to Be Ready
       - name: Wait for Application to Be Ready
         run: kubectl rollout status deployment/devops-fusion-webapi
 
-      # Get Minikube IP address
       - name: Get Minikube IP
         run: echo "MINIKUBE_IP=$(minikube ip)" >> $GITHUB_ENV
 
-      # Wait for the pod to be ready
       - name: Wait for Pod to be Ready
         run: |
           kubectl wait --for=condition=ready pod -l app=devops-fusion-webapi --timeout=120s
 
-      # Access the Application
-      - name: Access the Application
+      - name: Port Forward and Access Application
         run: |
-          kubectl port-forward service/devops-fusion-webapi 8080:8080
-          echo "Access app at http://localhost:8080/weatherforecast"
+          kubectl port-forward service/devops-fusion-webapi 8080:8080 &
+          echo "Accessing app at http://localhost:8080/weatherforecast"
+          curl http://localhost:8080/weatherforecast
           echo "Accessing app at http://$MINIKUBE_IP:30000/weatherforecast"
           curl http://$MINIKUBE_IP:30000/weatherforecast
-          kubectl port-forward service/devops-fusion-webapi 8080:8080
-
+          
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
